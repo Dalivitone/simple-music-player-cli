@@ -26,7 +26,7 @@ public class Menu {
 
     private void printWelcome() {
         System.out.println(Colours.boldColorize("+----------------------------------------+", Colours.PURPLE));
-        System.out.println(Colours.boldColorize("|        🎵  MUSIC PLAYER CLI  🎵          ", Colours.PURPLE));
+        System.out.println(Colours.boldColorize("|             MUSIC PLAYER CLI            ", Colours.PURPLE));
         System.out.println(Colours.boldColorize("+----------------------------------------+", Colours.PURPLE));
         System.out.println();    
     }
