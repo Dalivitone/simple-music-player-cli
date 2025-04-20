@@ -62,8 +62,7 @@ public class Menu {
             int choice = Integer.valueOf(scanner.nextLine());
             Song song = songs.get(choice - 1);
             song.start();
-            System.out.println(song);
-            song.status();
+            System.out.println(Colours.colorize("Now playing: ", Colours.CYAN) + song);
             songsOptions(song);
         } else {
             System.out.println(Colours.YELLOW + " Error: No songs." + Colours.RESET);
@@ -94,27 +93,38 @@ public class Menu {
         }
     }
 
-    private void nextTrack(Song song) {
+    private Song nextTrack(Song song) {
         int currentIndex = songs.indexOf(song);
         song.stop();
         currentIndex++;
         if(currentIndex < songs.size()) {
-            Song next = songs.get(currentIndex);
-            next.start();
+            return getSong(currentIndex);
         } else {
             System.out.println("Reached the end");
+            return null;
         }
     }
 
-    private void previousTrack(Song song) {
+    private Song getSong(int currentIndex) {
+        Song next = songs.get(currentIndex);
+        next.start();
+        System.out.println(Colours.colorize("Now playing: ", Colours.CYAN) + next);
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {}
+        next.status();
+        return next;
+    }
+
+    private Song previousTrack(Song song) {
         int currentIndex = songs.indexOf(song);
         song.stop();
         currentIndex--;
         if(currentIndex >= 0) {
-            Song next = songs.get(currentIndex);
-            next.start();
+            return getSong(currentIndex);
         } else {
             System.out.println("Reached the end");
+            return null;
         }
     }
 
@@ -122,17 +132,18 @@ public class Menu {
         System.out.println(Colours.bold("\nPLAYER CONTROLS"));
         song.status();
         while(true) {
-            System.out.println(songs.indexOf(song));
             System.out.println("\n" +
-                    Colours.colorize("[p]", Colours.GREEN) + " Pause | " +
+                    Colours.colorize("[s]", Colours.GREEN) + " Stop | " +
                     Colours.colorize("[r]", Colours.GREEN) + " Resume | " +
                     Colours.colorize("[f]", Colours.GREEN) + " Skip forward 5s | " +
                     Colours.colorize("[b]", Colours.GREEN) + " Skip back 5s | " +
+                    Colours.colorize("[n]", Colours.GREEN) + " Next track | " +
+                    Colours.colorize("[p]", Colours.GREEN) + " Previous track | " +
                     Colours.colorize("[x]", Colours.GREEN) + " Exit to menu");
             String command = scanner.nextLine();
             if(command.equals("s")) {
                 song.pause();
-                System.out.println(Colours.colorize(" Paused", Colours.BLUE));
+                System.out.println(Colours.colorize(" Stopped", Colours.BLUE));
             } else if(command.equals("r")) {
                 song.resume();
                 System.out.println(Colours.colorize("  Resumed", Colours.GREEN));
@@ -150,9 +161,15 @@ public class Menu {
                 System.out.println(Colours.colorize(" Skipped back 5 seconds", Colours.BLUE));
                 System.out.println(song);
             } else if(command.equals("n")) {
-                nextTrack(song);
+                Song next = nextTrack(song);
+                if(next != null) {
+                    song = next;
+                }
             } else if(command.equals("p")) {
-                previousTrack(song);
+                Song previous = previousTrack(song);
+                if(previous != null) {
+                    song = previous;
+                }
             }
             else {
                 System.out.println(Colours.colorize("Wrong command!", Colours.YELLOW));
